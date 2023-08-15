@@ -10,11 +10,8 @@ import multiprocessing as mp
 from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 
-service_account = ' idsdrr@ee-idsdrr.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, 'ee-idsdrr-d856f70748a7.json')
-
-# service_account = ' gee-230@ee-saikrishnadammalapati.iam.gserviceaccount.com'
-# credentials = ee.ServiceAccountCredentials(service_account, 'ee-saikrishnadammalapati-0f9fd1bee930.json')
+service_account = 'ueinfo@ueinfo.iam.gserviceaccount.com '
+credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-3a6879e85ef2.json')
 
 ee.Initialize(credentials)
 
@@ -38,7 +35,7 @@ def clip_image(roi):
 def download_tifs(pollutant, airshed_shp):
     tic = time.perf_counter()
 
-    year=2022
+    year=2021
     airshed_box, aoi = get_aoi(airshed_shp)
     
     airshed_name = airshed_shp.split('/')[-1].split('.')[0][6:]
@@ -79,11 +76,10 @@ def download_tifs(pollutant, airshed_shp):
             startDate = str(year)+'-'+str(month)+'-01'
             endDate = str(year)+'-'+str(month)+'-15'
 
-        #if 'bishek/NO2_tifs\\'+airshed_name+'_15dayavg_'+'no2_'+startDate+'.tropospheric_NO2_column_number_density'+'.tif' in tifs:
-         #   print('Yaoooo')
-          #  continue
-        #else:
-         #   pass
+        if os.getcwd()+'/data/'+pollutant+'_csvs/'+airshed_name+'_15dayavg'+'_'+pollutant.lower()+'_'+startDate+'.csv' in glob.glob(os.getcwd()+'/data/'+pollutant+'_csvs/*.csv'):
+           continue
+        else:
+           pass
         
         
         #Filter image collection -- filtered for date range, chennai_box range,
@@ -128,11 +124,15 @@ def download_tifs(pollutant, airshed_shp):
     print('Time taken {} seconds'.format(toc-tic))
 
 
-#pool= ThreadPool(processes=3)
+pool= ThreadPool(processes=3)
 #pool.map(download_tifs,['SO2','HCHO','O3'])
 
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 
+args= []
 for airshed in tqdm(airsheds):
     #print(airshed)
-    download_tifs('NO2', airshed)
+    args.append(['NO2', airshed])
+    #download_tifs('NO2', airshed)
+
+pool.starmap(download_tifs, args)
