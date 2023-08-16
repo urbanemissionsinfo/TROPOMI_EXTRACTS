@@ -11,7 +11,7 @@ from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 
 service_account = 'ueinfo@ueinfo.iam.gserviceaccount.com '
-credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-3a6879e85ef2.json')
+credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158.json')
 
 ee.Initialize(credentials)
 
@@ -124,7 +124,7 @@ def download_tifs(pollutant, airshed_shp):
     print('Time taken {} seconds'.format(toc-tic))
 
 
-pool= ThreadPool(processes=3)
+pool= ThreadPool(processes=4)
 #pool.map(download_tifs,['SO2','HCHO','O3'])
 
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
@@ -132,7 +132,7 @@ airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 args= []
 for airshed in tqdm(airsheds):
     #print(airshed)
-    args.append(['NO2', airshed])
+    args.append(['O3', airshed])
     #download_tifs('NO2', airshed)
 
 pool.starmap(download_tifs, args)
