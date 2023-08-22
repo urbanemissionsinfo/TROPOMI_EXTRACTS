@@ -132,7 +132,7 @@ airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 args= []
 for airshed in tqdm(airsheds):
     #print(airshed)
-    args.append(['O3', airshed])
+    args.append(['SO2', airshed])
     #download_tifs('NO2', airshed)
 
 pool.starmap(download_tifs, args)
