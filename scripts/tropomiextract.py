@@ -35,7 +35,7 @@ def clip_image(roi):
 def download_tifs(pollutant, airshed_shp):
     tic = time.perf_counter()
 
-    year=2021
+    year=2023
     airshed_box, aoi = get_aoi(airshed_shp)
     
     airshed_name = airshed_shp.split('/')[-1].split('.')[0][6:]
