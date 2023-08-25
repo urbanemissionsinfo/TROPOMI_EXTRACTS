@@ -6,7 +6,7 @@ import re
 import numpy as np
 from tqdm import tqdm
 
-pollutant = 'O3'
+pollutant = 'SO2'
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 date_pattern = r"(\d{4}-\d{2}-\d{2})"
 
