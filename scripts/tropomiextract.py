@@ -35,7 +35,7 @@ def clip_image(roi):
 def download_tifs(pollutant, airshed_shp):
     tic = time.perf_counter()
 
-    year=2023
+    year=2019 ## YEAR FOR WHICH DATA NEEDS TO BE DOWNLOADED - USER INPUT
     airshed_box, aoi = get_aoi(airshed_shp)
     
     airshed_name = airshed_shp.split('/')[-1].split('.')[0][6:]
@@ -43,11 +43,13 @@ def download_tifs(pollutant, airshed_shp):
     print("Downloading TIFs for the airshed: ",airshed_name)
     print('----***-----*-----***----')
 
-    if year ==2023:
-        max_month=8
+    if year ==2024:
+        max_month=1
     else:
         max_month=13
-    for month in range(1,max_month):
+    
+    min_month = 1 # USER INPUT - MONTH START
+    for month in range(min_month, max_month):
         print('----')
         print('Downloading for month: ', month)
         print('----')
@@ -77,16 +79,25 @@ def download_tifs(pollutant, airshed_shp):
         else:
             startDate = str(year)+'-'+str(month)+'-01'
             endDate = str(year)+'-'+str(month)+'-15'
-
-        if os.getcwd()+'/data/'+pollutant+'_csvs/'+airshed_name+'_15dayavg'+'_'+pollutant.lower()+'_'+startDate+'.csv' in glob.glob(os.getcwd()+'/data/'+pollutant+'_csvs/*.csv'):
-           continue
-        else:
-           pass
-        
         
         #Filter image collection -- filtered for date range, chennai_box range,
         fortnight=0
         while fortnight<2:
+            # To skip already downloaded csv
+            if os.getcwd()+'/data/'+pollutant+'_csvs/'+airshed_name+'_15dayavg'+'_'+pollutant.lower()+'_'+startDate+'.csv' in glob.glob(os.getcwd()+'/data/'+pollutant+'_csvs/*.csv'):
+                startDate = startDate[:-2]+'16'
+                if month==2:
+                    endDate = endDate[:-2]+'28'
+                elif month in [4,6,9,11]:
+                    endDate = endDate[:-2]+'30'
+                else:
+                    endDate = endDate[:-2]+'31'
+            
+                fortnight = fortnight+1
+                continue
+            else:
+                pass
+            
             filtered = collection.filter(ee.Filter.date(startDate, endDate)).filter(ee.Filter.bounds(aoi))
             #Apply the maskClouds and clip_image function to each image in the image collection.
             cloudMasked = filtered.map(maskClouds).select(band_name)
