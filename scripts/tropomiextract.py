@@ -15,6 +15,10 @@ credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158
 
 ee.Initialize(credentials)
 
+# USER INPUTS
+pollutant_to_extract = 'HCHO'
+year_to_extract = 2021
+
 def get_aoi(airshed_shp):
     airshed_box = geemap.shp_to_ee(airshed_shp)
     aoi = airshed_box.geometry()
@@ -35,7 +39,7 @@ def clip_image(roi):
 def download_tifs(pollutant, airshed_shp):
     tic = time.perf_counter()
 
-    year=2023 ## YEAR FOR WHICH DATA NEEDS TO BE DOWNLOADED - USER INPUT
+    year=year_to_extract ## YEAR FOR WHICH DATA NEEDS TO BE DOWNLOADED - USER INPUT
     airshed_box, aoi = get_aoi(airshed_shp)
     
     airshed_name = airshed_shp.split('/')[-1].split('.')[0][6:]
@@ -142,10 +146,11 @@ pool= ThreadPool(processes=4)
 
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 
+airsheds = ['/home/krishna/UEInfo/TROPOMI_EXTRACTS/data/gridextents_shponly/grids_lucknow.shp']
 args= []
 for airshed in tqdm(airsheds):
     #print(airshed)
-    args.append(['HCHO', airshed])
+    args.append([pollutant_to_extract, airshed])
     #download_tifs('NO2', airshed)
 
 pool.starmap(download_tifs, args)
