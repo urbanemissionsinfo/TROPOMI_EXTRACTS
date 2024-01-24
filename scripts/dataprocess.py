@@ -5,8 +5,15 @@ from natsort import natsorted
 import re
 import numpy as np
 from tqdm import tqdm
+import sys
 
-pollutant = 'HCHO'
+# Check if there are enough command line arguments
+if len(sys.argv) < 2:
+    print("Usage: python scripts/dataprocess.py pollutant")
+    sys.exit(1)
+
+pollutant = sys.argv[1]
+
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 date_pattern = r"(\d{4}-\d{2}-\d{2})"
 

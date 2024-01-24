@@ -9,6 +9,13 @@ from joblib import Parallel, delayed
 import multiprocessing as mp
 from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
+import sys
+
+# Check if there are enough command line arguments
+if len(sys.argv) < 3:
+    print("Usage: python scripts/tropomiextract.py pollutant_to_extract year_to_extract")
+    sys.exit(1)
+
 
 service_account = 'ueinfo@ueinfo.iam.gserviceaccount.com '
 credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158.json')
@@ -16,8 +23,8 @@ credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158
 ee.Initialize(credentials)
 
 # USER INPUTS
-pollutant_to_extract = 'HCHO'
-year_to_extract = 2021
+pollutant_to_extract = sys.argv[1]
+year_to_extract = int(sys.argv[2])
 
 def get_aoi(airshed_shp):
     airshed_box = geemap.shp_to_ee(airshed_shp)
