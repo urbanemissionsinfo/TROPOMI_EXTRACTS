@@ -152,8 +152,7 @@ pool= ThreadPool(processes=4)
 #pool.map(download_tifs,['SO2','HCHO','O3'])
 
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
-
-airsheds = ['/home/krishna/UEInfo/TROPOMI_EXTRACTS/data/gridextents_shponly/grids_rourkela.shp']
+airsheds = ['/home/krishna/UEInfo/TROPOMI_EXTRACTS/data/gridextents_shponly/grids_raipur.shp']
 args= []
 for airshed in tqdm(airsheds):
     #print(airshed)
