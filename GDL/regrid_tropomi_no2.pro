@@ -2,8 +2,8 @@
 ;-----------------------------------------------------------------------------------
 ;Define Input variables
 
-input_directory='G:\Goldberg\TROPOMI\V2\'  ;MUST change this directory!
-output_directory='G:\Goldberg\TROPOMI\V2\' ;MUST change this directory!
+input_directory='/home/krishna/UEInfo/TROPOMI_EXTRACTS/data/GDL_Data'  ;MUST change this directory!
+output_directory='/home/krishna/UEInfo/TROPOMI_EXTRACTS/data/GDL_Data' ;MUST change this directory!
 
 domain_name='India'
 gridsize=0.01   ;Must be smaller than 0.04, ideally equal to or smaller than 0.01

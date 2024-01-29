@@ -14,6 +14,8 @@ if len(sys.argv) < 2:
 
 pollutant = sys.argv[1]
 
+avogadro_constant = 6.022e23
+
 airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 date_pattern = r"(\d{4}-\d{2}-\d{2})"
 
@@ -37,4 +39,7 @@ for airshed in tqdm(airsheds):
         
     df = pd.DataFrame([dates,mean_pollutant_values]).T
     df.columns=['date','mean_concentration']
-    df.to_csv(os.getcwd()+'/data/timeseries/'+airshed_name+'_'+pollutant+'_timeseries.csv', index=False)
+
+    # Converting Mean Concentration from mol/m2 to molecules/m2
+    df['mean_concentration'] = avogadro_constant*df['mean_concentration'] 
+    df.to_csv(os.getcwd()+'/data/timeseries/satellite_tropomi_{}_{}.csv'.format(pollutant.lower(), airshed_name.lower()), index=False)

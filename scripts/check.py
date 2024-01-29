@@ -2,7 +2,7 @@ import glob
 import os
 from collections import Counter
 
-csvs = glob.glob(os.getcwd()+'/data/SO2_csvs/*.csv')
+csvs = glob.glob(os.getcwd()+'/data/O3_csvs/*.csv')
 
 cities = []
 for csv in csvs:
