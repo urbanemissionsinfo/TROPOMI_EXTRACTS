@@ -27,7 +27,7 @@ ahmedabad,"Ahmedabad, GJ",Ahmedabad,GJ,50 x 50
 rajkot,"Rajkot, GJ",Rajkot,GJ,30 x 30
 surat,"Surat, GJ",Surat,GJ,50 x 50
 vadodara,"Vadodara, GJ",Vadodara,GJ,30 x 30
-kalaamb,"Kala Amb, HP",Kala Amb,HP,30 x 30
+kala_amb,"Kala Amb, HP",Kala Amb,HP,30 x 30
 nalagarh,"Nalagarh, HP",Nalagarh,HP,30 x 30
 paontasahib,"Paonta Sahib, HP",Paonta Sahib,HP,20 x 20
 sundernagar,"Sunder Nagar, HP",Sunder Nagar,HP,20 x 20
@@ -39,7 +39,7 @@ ranchi,"Ranchi, JH",Ranchi,JH,40 x 40
 bangalore,"Bangalore, KA",Bangalore,KA,60 x 60
 devanagere,"Devanagere, KA",Devanagere,KA,30 x 30
 gulburga,"Gulburga, KA",Gulburga,KA,30 x 30
-hublidharwad,"Hubli Dharwad, KA",Hubli Dharwad,KA,30 x 30
+hubli_dharwad,"Hubli Dharwad, KA",Hubli Dharwad,KA,30 x 30
 bhopal,"Bhopal, MP",Bhopal,MP,40 x 40
 gwalior,"Gwalior, MP",Gwalior,MP,30 x 30
 indore,"Indore, MP",Indore,MP,80 x 80
@@ -68,7 +68,7 @@ amritsar,"Amritsar, PB",Amritsar,PB,40 x 40
 jalandhar,"Jalandhar, PB",Jalandhar,PB,40 x 40
 khanna,"Khanna, PB",Khanna,PB,30 x 30
 ludhiana,"Ludhiana, PB",Ludhiana,PB,40 x 40
-nayanangal,"Naya Nangal, PB",Naya Nangal,PB,30 x 30
+naya_nangal,"Naya Nangal, PB",Naya Nangal,PB,30 x 30
 pathankot,"Pathankot, PB",Pathankot,PB,30 x 30
 patiala,"Patiala, PB",Patiala,PB,60 x 40
 alwar,"Alwar, RJ",Alwar,RJ,30 x 30

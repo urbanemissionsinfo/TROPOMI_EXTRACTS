@@ -49,3 +49,6 @@ Example usage: `python scripts/timeseries_plot.py NO2 hyderabad`
 5. `season_plot.py`: If you want to see the season plot based on the timeseries CSVs produced above.
 Example usage: `python scripts/season_plot.py NO2 hyderabad`
 
+6. `run_plots.py`: Run above plots for all airshed-pollutant combinations.
+Example usage: `python scripts/run_plots.py season_plot`
+

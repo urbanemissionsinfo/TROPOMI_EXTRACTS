@@ -7,7 +7,7 @@ from matplotlib.ticker import ScalarFormatter
 
 # Check if there are enough command line arguments
 if len(sys.argv) < 3:
-    print("Usage: python scripts/plot.py pollutant airshed")
+    print("Usage: python scripts/timeseries_plot.py pollutant airshed")
     sys.exit(1)
 
 pollutant = sys.argv[1]
@@ -22,7 +22,7 @@ elif pollutant.lower() == 'o3':
 elif pollutant.lower() == 'hcho':
     plot_color = 'green'
 else:
-    print("Please check. Invalid name of airshed or pollutant")
+    print("Please check. Invalid name of airshed or pollutant: ", airshed)
     sys.exit(2)
 
 # Create a DataFrame with date and values
@@ -30,7 +30,7 @@ try:
     df = pd.read_csv(os.getcwd() + '/data/timeseries/satellite_tropomi_{}_{}.csv'.format(pollutant.lower(), airshed.lower()))
     df['date'] = pd.to_datetime(df['date'])
 except:
-    print("Please check. Invalid name of airshed or pollutant")
+    print("Please check. Invalid name of airshed or pollutant: ", airshed)
     sys.exit(2)
 
 # Take city name from city_state_file_names.csv for Plot title
@@ -78,4 +78,3 @@ plt.gca().yaxis.set_major_formatter(formatter)
 
 plt.tight_layout()
 plt.savefig(os.getcwd() + '/plots/satellite_tropomi_timeseries/satellite_tropomi_{}_{}.png'.format(pollutant.lower(), airshed.lower()))
-print("Plot saved in plots folder")
