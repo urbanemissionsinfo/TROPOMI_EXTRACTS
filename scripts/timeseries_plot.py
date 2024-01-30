@@ -35,8 +35,19 @@ except:
 
 # Take city name from city_state_file_names.csv for Plot title
 city_state_file_names = pd.read_csv(os.getcwd()+'/data/city_state_file_names.csv')
-airshed_on_plot = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['citystatename'].to_list()[0]
-airshedsize = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['airshedsize'].to_list()[0]
+if airshed.lower() == 'india':
+    airshed_on_plot = 'INDIA'
+    # Add data source annotation
+    data_source_annotation = '''Monthly averages of India airshed covering grids of 0.1 degree resolution
+    Data is extracted using Google Earth Engine algorithms'''
+
+else:
+    airshed_on_plot = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['citystatename'].to_list()[0]
+    airshedsize = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['airshedsize'].to_list()[0]
+    # Add data source annotation
+    data_source_annotation = '''15-day averages of city airshed covering {} grids of 0.01 degree resolution
+    Data is extracted using Google Earth Engine algorithms'''.format(airshedsize)
+
 
 # Plot the time series
 plt.figure(figsize=(10, 6))
@@ -62,10 +73,7 @@ year_dates = pd.date_range(start=df['date'].to_list()[0] - timedelta(days=1),
 for y_date in year_dates:
     plt.axvline(x=y_date, color='gray', linestyle='-', linewidth=0.5)
 
-# Add data source annotation
-data_source = '''15-day averages of city airshed covering {} grids of 0.01 degree resolution
-Data is extracted using Google Earth Engine algorithms'''.format(airshedsize)
-plt.text(0.01, 0.02, data_source, fontsize=7, color='gray', transform=plt.gcf().transFigure)
+plt.text(0.01, 0.02, data_source_annotation, fontsize=7, color='gray', transform=plt.gcf().transFigure)
 
 # Load the image
 logo = plt.imread(os.getcwd() + '/assets/logo.grid.3_transp.png')  # Provide the path to your image file

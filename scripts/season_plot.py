@@ -17,8 +17,18 @@ airshed = sys.argv[2]
 
 # Take city name from city_state_file_names.csv for Plot title
 city_state_file_names = pd.read_csv(os.getcwd()+'/data/city_state_file_names.csv')
-airshed_on_plot = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['citystatename'].to_list()[0]
-airshedsize = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['airshedsize'].to_list()[0]
+if airshed.lower() == 'india':
+    airshed_on_plot = 'INDIA'
+    # Add data source annotation
+    data_source_annotation = '''Monthly averages of India airshed covering grids of 0.1 degree resolution
+    Data is extracted using Google Earth Engine algorithms'''
+
+else:
+    airshed_on_plot = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['citystatename'].to_list()[0]
+    airshedsize = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['airshedsize'].to_list()[0]
+    # Add data source annotation
+    data_source_annotation = '''15-day averages of city airshed covering {} grids of 0.01 degree resolution
+    Data is extracted using Google Earth Engine algorithms'''.format(airshedsize)
 
 # Create a DataFrame with date and values
 try:
@@ -71,18 +81,22 @@ plt.gca().yaxis.set_major_formatter(formatter)
 plt.yticks(fontweight='bold', fontsize=10)
 
 # Add data source annotation
-data_source = '''15-day averages of city airshed covering {} grids of 0.01 degree resolution
-Data is extracted using Google Earth Engine algorithms'''.format(airshedsize)
-plt.text(0.01, 0.02, data_source, fontsize=8, color='gray', transform=plt.gcf().transFigure)
+plt.text(0.01, 0.02, data_source_annotation, fontsize=8, color='gray', transform=plt.gcf().transFigure)
 
 # Load the image
 logo = plt.imread(os.getcwd() + '/assets/logo.grid.3_transp.png')  # Provide the path to your image file
 plt.figimage(logo, xo=1500, yo=0.02)
 
 # Customize grid
-plt.xticks(np.arange(0, 23, 2),
+if airshed.lower() == 'india':
+    plt.xticks(np.arange(0, 12, 1),
+           [month[:3] for month in df_pivot.index[0::1].to_list()],
+           fontweight='bold', fontsize=10)  # Adjust the range and step size as needed
+else:
+    plt.xticks(np.arange(0, 23, 2),
            [month[:3] for month in df_pivot.index[0::2].to_list()],
            fontweight='bold', fontsize=10)  # Adjust the range and step size as needed
+
 plt.grid(True, color='gray')  # Enable grid for both major and minor ticks
 
 plt.legend(loc='lower center', ncol=len(df_pivot.columns), fontsize=10.5)

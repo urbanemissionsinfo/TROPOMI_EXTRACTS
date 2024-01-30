@@ -8,21 +8,32 @@ from tqdm import tqdm
 import sys
 
 # Check if there are enough command line arguments
-if len(sys.argv) < 2:
-    print("Usage: python scripts/dataprocess.py pollutant")
+if len(sys.argv) < 3:
+    print("Usage: python scripts/dataprocess.py pollutant INDIA_OR_AIRSHED")
     sys.exit(1)
 
 pollutant = sys.argv[1]
+All_India_or_City = sys.argv[2]
+if All_India_or_City.lower() == 'india':
+    csvs_path = os.getcwd()+'/data/AllIndia_'+pollutant+'_csvs/'
+    airsheds = ['INDIA']
+else:
+    csvs_path = os.getcwd()+'/data/'+pollutant+'_csvs/'
+    airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
+
+
 
 avogadro_constant = 6.022e23
 
-airsheds = glob.glob(os.getcwd()+"/data/gridextents_shponly/*.shp")
 date_pattern = r"(\d{4}-\d{2}-\d{2})"
 
 for airshed in tqdm(airsheds):
-    airshed_name = airshed.split('/')[-1].split('.')[0][6:]
+    if All_India_or_City.lower() == 'india':
+        airshed_name = airshed
+    else:
+        airshed_name = airshed.split('/')[-1].split('.')[0][6:]
     
-    csvs = glob.glob(os.getcwd()+'/data/'+pollutant+'_csvs/'+airshed_name+'*.csv')
+    csvs = glob.glob(csvs_path+airshed_name+'*.csv')
     csvs = natsorted(csvs)
 
     mean_pollutant_values = []
