@@ -9,7 +9,7 @@ import sys
 
 # Check if there are enough command line arguments
 if len(sys.argv) < 3:
-    print("Usage: python scripts/plot.py pollutant airshed")
+    print("Usage: python scripts/season_plot.py pollutant airshed")
     sys.exit(1)
 
 pollutant = sys.argv[1]

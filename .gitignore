@@ -4,7 +4,10 @@ ee-idsdrr-d856f70748a7.json
 ueinfo-615e315d9158.json
 
 # Big files
-.nc
+*.nc
+*.geojson
+*.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
