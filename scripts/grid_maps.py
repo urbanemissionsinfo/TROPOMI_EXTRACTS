@@ -56,7 +56,7 @@ def bin(x):
 # Load base map shapefile
 base_map = gpd.read_file(os.getcwd() + "/assets/INDIA_STATES.geojson")
 
-def download_tropomi_india(geojson):
+def plot_tropomi_india(geojson):
     year = re.findall(r'\d{4}', geojson)[0]
     month = re.findall(r'\d{2}', geojson)[2]
     month_str = str_month_to_abbreviation(month).upper()
@@ -87,9 +87,17 @@ def download_tropomi_india(geojson):
     ax.set_xlim(grid_data.X1.min(), grid_data.X2.max())
     ax.set_ylim(grid_data.Y1.min(), grid_data.Y2.max())
 
+    # Add year - month annotation
+    bbox_props = dict(boxstyle="square,pad=0.3", fc="white", ec="black", lw=1)
+    plt.text(88, 38,
+             '{}-{}'.format(year, month_str),
+             fontsize=20, fontweight='bold', color='black',
+             ha='center', va='center',
+             bbox=bbox_props)
+
 
     # Add title
-    plt.title("TROPOMI Retrievals Monthly Average for NO2 Columnar Density - {} {}".format(year, month_str))
+    plt.title("TROPOMI Retrievals Monthly Average for NO2 Columnar Density")
 
     # Load the image
     logo = plt.imread(os.getcwd() + '/assets/UEinfo_logo3_resized.jpg')  # Provide the path to your image file
@@ -98,6 +106,9 @@ def download_tropomi_india(geojson):
     legend_img = plt.imread(os.getcwd() + '/assets/gridchoropleth_legend_resized.png')  # Provide the path to your image file
     plt.figimage(legend_img, xo=735, yo=845)
 
+    
+
+
     plt.tight_layout()
     # Show plot
     plt.savefig(os.getcwd() +"/plots/INDIABOX_TROPOMI_NO2_{}_{}.png".format(year, month),
@@ -105,4 +116,6 @@ def download_tropomi_india(geojson):
                 )
 
 
-Parallel(n_jobs=4)(delayed(download_tropomi_india)(geojson) for geojson in regridded_geojsons)
+Parallel(n_jobs=4)(delayed(plot_tropomi_india)(geojson) for geojson in regridded_geojsons)
+
+#plot_tropomi_india(regridded_geojsons[1])
