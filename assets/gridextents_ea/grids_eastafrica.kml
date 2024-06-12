@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="grids_eastafrica" id="grids_eastafrica">
+	<SimpleField name="Maille" type="string"></SimpleField>
+	<SimpleField name="grid_name" type="string"></SimpleField>
+</Schema>
+<Folder><name>grids_eastafrica</name>
+  <Placemark>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#grids_eastafrica">
+		<SimpleData name="Maille">0</SimpleData>
+		<SimpleData name="grid_name">grids_eastafrica</SimpleData>
+	</SchemaData></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>28,15 48,15 48,-5 28,-5 28,15</coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Folder>
+</Document></kml>

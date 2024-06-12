@@ -7,7 +7,9 @@ ueinfo-615e315d9158.json
 *.nc
 *.geojson
 *.zip
-
+*.tif
+*.csv
+*.png
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

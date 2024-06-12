@@ -23,7 +23,7 @@ Example usage: `python scripts/tropomiextract.py NO2 2023`
 
 1.1 Ideally, you would have 24 csvs per year. But due to connectivity issues, the above code would skip producing a few csvs. Use `check.py` to see which airsheds have incomplete extracts.
 
-2. `all_india_extract_monthly.py` code helps in extracting TROPOMI dataset for INDIA airshed. It downloads a tif image and a csv for a monthly average period. `HCHO`, `NO2`, `SO2`, `O3` pollutants are covered in this code. There are only two user inputs needed (inside code) to execute this script:
+2. `tropomi_extract_monthly.py` code helps in extracting TROPOMI dataset for the given gridextent. It downloads a tif image and a csv for a monthly average period. `HCHO`, `NO2`, `SO2`, `O3` pollutants are covered in this code. There are only two user inputs needed (inside code) to execute this script: (Also change the path to gridextent shapefile and name of it in the code - lines 140 and 54)
     a. `pollutant_to_extract` - one of these `HCHO`, `NO2`, `SO2`, `O3` 
     b. `year_to_extract` - 2019 onwards.
 
@@ -46,6 +46,7 @@ Example usage: `python scripts/regrid.py NO2`
 
 8. `india_grids_composite.py`: Makes a single composite csv of the All India grids for all 60 months.
 
+9. `grid_maps.py`: 
 
 ## Directory Tree
 ├── data (This folder is not added to GitHub) <br>

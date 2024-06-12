@@ -13,8 +13,8 @@ if len(sys.argv) < 3:
     sys.exit(1)
 
 pollutant = sys.argv[1]
-All_India_or_City = sys.argv[2]
-if All_India_or_City.lower() == 'india':
+Extent_or_City = sys.argv[2]
+if Extent_or_City.lower() == 'extent':
     csvs_path = os.getcwd()+'/data/AllIndia_'+pollutant+'_csvs/'
     airsheds = ['INDIA']
 else:
@@ -29,6 +29,8 @@ date_pattern = r"(\d{4}-\d{2}-\d{2})"
 
 for airshed in tqdm(airsheds):
     if All_India_or_City.lower() == 'india':
+        airshed_name = airshed
+    elif All_India_or_City.lower() == 'ea':
         airshed_name = airshed
     else:
         airshed_name = airshed.split('/')[-1].split('.')[0][6:]
@@ -53,4 +55,4 @@ for airshed in tqdm(airsheds):
 
     # Converting Mean Concentration from mol/m2 to molecules/m2
     df['mean_concentration'] = avogadro_constant*df['mean_concentration'] 
-    df.to_csv(os.getcwd()+'/data/timeseries/satellite_tropomi_{}_{}.csv'.format(pollutant.lower(), airshed_name.lower()), index=False)
+    df.to_csv(os.getcwd()+'/data/timeseries/satellite_tropomi_{}_{}.csv'.format(pollutant.lower(), airshed_name.lower().replace(' ','')), index=False)

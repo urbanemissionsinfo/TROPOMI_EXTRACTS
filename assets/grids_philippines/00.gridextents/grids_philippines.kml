@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="grids_philippines" id="grids_philippines">
+	<SimpleField name="Maille" type="string"></SimpleField>
+	<SimpleField name="grid_name" type="string"></SimpleField>
+</Schema>
+<Folder><name>grids_philippines</name>
+  <Placemark>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#grids_philippines">
+		<SimpleData name="Maille">0</SimpleData>
+		<SimpleData name="grid_name">grids_philippines</SimpleData>
+	</SchemaData></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>118,20 128,20 128,5 118,5 118,20</coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Folder>
+</Document></kml>
