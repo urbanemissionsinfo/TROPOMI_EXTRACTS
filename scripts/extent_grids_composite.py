@@ -16,14 +16,18 @@ if len(sys.argv) < 3:
 extent = sys.argv[1].upper()
 pollutant = sys.argv[2].upper()
 
-csvs = glob.glob(os.getcwd() + '/data/{}_{}_regridded/regridded*.csv'.format(extent, pollutant))
+csvs = glob.glob(os.getcwd() + '/data/{}_{}_regridded_yearly/regridded*.csv'.format(extent, pollutant))
 composite_df = pd.read_csv(csvs[0])[['Maille', 'Maille_Y', 'Maille_X']]
 
 for csv in tqdm(natsorted(csvs)):
     df = pd.read_csv(csv)[['value']]
+    if pollutant=="AOD":
+         df.value = 0.001*df.value
+
     month = re.findall(r"\d{4}\-\d{2}", csv)[0]
     parsed_date = datetime.strptime(month, "%Y-%m")
     formatted_date = parsed_date.strftime("%Y%b").upper() #2019JAN, ...
+    formatted_date = parsed_date.strftime("%Y").upper() #2019, ...
 
     composite_df[formatted_date] = df.value
 
@@ -31,4 +35,4 @@ composite_folder_path = os.getcwd() + '/data/{}_composites/'.format(extent)
 if not os.path.exists(composite_folder_path[:-1]):
         os.makedirs(composite_folder_path[:-1])
 
-composite_df.to_csv(composite_folder_path + '{}_composite_{}.csv'.format(extent, pollutant), index=False)
+composite_df.to_csv(composite_folder_path + '{}_composite_{}_yearly.csv'.format(extent, pollutant), index=False)

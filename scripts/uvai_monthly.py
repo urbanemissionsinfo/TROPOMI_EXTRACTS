@@ -14,10 +14,22 @@ from datetime import datetime, timedelta
 import sys
 
 # Check if there are enough command line arguments
-if len(sys.argv) < 2:
-    print("Usage: python scripts/uvai.py year_to_extract")
+if len(sys.argv) < 3:
+    print("Usage: python scripts/uvai.py pollutant year_to_extract")
     sys.exit(1)
 
+def bitwiseExtract(input, fromBit, toBit):
+    maskSize = ee.Number(1).add(toBit).subtract(fromBit)
+    mask = ee.Number(1).leftShift(maskSize).subtract(1)
+    return input.rightShift(fromBit).bitwiseAnd(mask)
+
+
+def aod_mask(image):
+    aod_qa_band = image.select('AOD_QA')
+    cloudMask = bitwiseExtract(aod_qa_band, 0, 2).eq(1)
+    aodqaMask = bitwiseExtract(aod_qa_band, 8, 11).eq(0)
+    mask = cloudMask.And(aodqaMask)
+    return image.updateMask(mask)
 
 service_account = 'ueinfo@ueinfo.iam.gserviceaccount.com '
 credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158.json')
@@ -25,7 +37,8 @@ credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158
 ee.Initialize(credentials)
 
 # USER INPUTS
-year_to_extract = int(sys.argv[1])
+pollutant = sys.argv[1]
+year_to_extract = int(sys.argv[2])
 
 def get_aoi(airshed_shp):
     airshed_box = geemap.shp_to_ee(airshed_shp)
@@ -46,7 +59,7 @@ def download_tifs(airshed_shp):
     year=year_to_extract ## YEAR FOR WHICH DATA NEEDS TO BE DOWNLOADED - USER INPUT
     airshed_box, aoi = get_aoi(airshed_shp)
     
-    airshed_name = 'PHILIPPINES'
+    airshed_name = 'ADDISABABA'
     print('----***-----*-----***----')
     print("Downloading TIFs for the airshed: ",airshed_name)
     print('----***-----*-----***----')
@@ -78,34 +91,33 @@ def download_tifs(airshed_shp):
         print('----')
         print('Downloading for month: ', date_start)
         print('----')
-    
-        
-        collection = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_AER_AI').select(['absorbing_aerosol_index'])
-        
 
-        #Filter image collection -- filtered for date range, airshed range
-        filtered = collection.filter(ee.Filter.date(date_start, date_end)).filter(ee.Filter.bounds(aoi))
-        #Apply the maskClouds and clip_image function to each image in the image collection.
-        clipped_images = filtered.map(clip_image(aoi))
-        
+        if pollutant == 'UVAI':
+            collection = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_AER_AI').select(['absorbing_aerosol_index'])
+            #Filter image collection -- filtered for date range, airshed range
+            filtered = collection.filter(ee.Filter.date(date_start, date_end)).filter(ee.Filter.bounds(aoi))
+            clipped_images = filtered.map(clip_image(aoi))
+        elif pollutant == "AOD":
+            collection = ee.ImageCollection('MODIS/061/MCD19A2_GRANULES').select(['Optical_Depth_055', 'AOD_QA'])
+            #Filter image collection -- filtered for date range, airshed range
+            filtered = collection.filter(ee.Filter.date(date_start, date_end)).filter(ee.Filter.bounds(aoi))
+            cloudMasked = filtered.map(aod_mask).select('Optical_Depth_055')
+            clipped_images = cloudMasked.map(clip_image(aoi))        
         
     
         ## To download aggregated data for the given airshed box in the form of a csv.
-        folder_path = os.getcwd()+'/data/'+airshed_name+'_UVAI_csvs'
+        folder_path = os.getcwd()+'/data/'+airshed_name+'_{}_tifs'.format(pollutant)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         geemap.zonal_statistics(clipped_images.median(),
                                 airshed_box,
-                                folder_path+'/'+airshed_name+'_monthlyavg'+'_uvai'+'_'+date_start+'.csv',
+                                folder_path+'/'+airshed_name+'_monthlyavg_'+pollutant+'_'+date_start+'.csv',
                                 statistics_type='MEAN',
                                 scale=11000)
         
         # To download all tif images of a collection 
-        folder_path = os.getcwd()+'/data/'+airshed_name+'_UVAI_tifs'
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
         geemap.ee_export_image(clipped_images.median(),
-                    filename=folder_path+'/'+airshed_name+'_monthlyavg'+'_uvai'+'_'+date_start+'.tif',
+                    filename=folder_path+'/'+airshed_name+'_monthlyavg_'+pollutant+'_'+date_start+'.tif',
                     scale=11000,
                     region=aoi,
                     file_per_band=True)
@@ -120,7 +132,8 @@ pool= ThreadPool(processes=1)
 
 #airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/gridextents_ea/grids_eastafrica.shp"
 #airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/india_grid/india_grid.shp"
-airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/grids_philippines/00.gridextents/grids_philippines.shp"
+#airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/grids_philippines/00.gridextents/grids_philippines.shp"
+airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/grids_addisababa/grids_addisababa.shp"
 
 args= []
 args.append([airshed])

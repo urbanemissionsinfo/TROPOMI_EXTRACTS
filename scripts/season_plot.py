@@ -16,7 +16,7 @@ pollutant = sys.argv[1]
 airshed = sys.argv[2]
 
 # Take city name from city_state_file_names.csv for Plot title
-city_state_file_names = pd.read_csv(os.getcwd()+'/data/city_state_file_names.csv')
+#city_state_file_names = pd.read_csv(os.getcwd()+'/data/city_state_file_names.csv')
 if airshed.lower() == 'india':
     airshed_on_plot = 'INDIA'
     # Add data source annotation
@@ -24,11 +24,12 @@ if airshed.lower() == 'india':
     Data is extracted using Google Earth Engine algorithms'''
 
 else:
-    airshed_on_plot = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['citystatename'].to_list()[0]
-    airshedsize = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['airshedsize'].to_list()[0]
+    pass
+    #airshed_on_plot = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['citystatename'].to_list()[0]
+    #airshedsize = city_state_file_names[city_state_file_names['filename'] == airshed.lower()]['airshedsize'].to_list()[0]
     # Add data source annotation
-    data_source_annotation = '''15-day averages of city airshed covering {} grids of 0.01 degree resolution
-    Data is extracted using Google Earth Engine algorithms'''.format(airshedsize)
+    #data_source_annotation = '''15-day averages of city airshed covering {} grids of 0.01 degree resolution
+    #Data is extracted using Google Earth Engine algorithms'''.format(airshedsize)
 
 # Create a DataFrame with date and values
 try:
@@ -72,26 +73,26 @@ df_pivot.plot(figsize=(16, 8),
         linewidth = 3)
 
 plt.title('Mean TROPOMI Columnar Density of {} for {}'.format(pollutant, airshed_on_plot), fontsize=20)
-plt.xlabel('Date', fontsize=15)
-plt.ylabel('Unit: molecules/${m^2}$ * ${10^{20}}$', fontsize=17)
+plt.xlabel('Date', fontsize=18)
+plt.ylabel('Unit: molecules/${m^2}$ * ${10^{20}}$', fontsize=22)
 # Set the y-axis formatter to use scientific notation with exponent 1e19
 formatter = ScalarFormatter(useMathText=True)
 formatter.set_powerlimits((20, 20))  # Set the exponent to 1e20
 plt.gca().yaxis.set_major_formatter(formatter)
-plt.yticks(fontweight='bold', fontsize=10)
+plt.yticks(fontweight='bold', fontsize=15)
 
 # Add data source annotation
-plt.text(0.01, 0.02, data_source_annotation, fontsize=8, color='gray', transform=plt.gcf().transFigure)
+#plt.text(0.01, 0.02, data_source_annotation, fontsize=8, color='gray', transform=plt.gcf().transFigure)
 
 # Load the image
 logo = plt.imread(os.getcwd() + '/assets/logo.grid.3_transp.png')  # Provide the path to your image file
-plt.figimage(logo, xo=1500, yo=0.02)
+#plt.figimage(logo, xo=1500, yo=0.02)
 
 # Customize grid
 if airshed.lower() == 'india':
     plt.xticks(np.arange(0, 12, 1),
            [month[:3] for month in df_pivot.index[0::1].to_list()],
-           fontweight='bold', fontsize=10)  # Adjust the range and step size as needed
+           fontweight='bold', fontsize=15)  # Adjust the range and step size as needed
 else:
     plt.xticks(np.arange(0, 23, 2),
            [month[:3] for month in df_pivot.index[0::2].to_list()],
@@ -99,6 +100,6 @@ else:
 
 plt.grid(True, color='gray')  # Enable grid for both major and minor ticks
 
-plt.legend(loc='lower center', ncol=len(df_pivot.columns), fontsize=10.5)
+plt.legend(loc='upper right', ncol=len(df_pivot.columns), fontsize=20)
 plt.tight_layout()
 plt.savefig(os.getcwd() + '/plots/satellite_tropomi_season/satellite_tropomi_season_{}_{}.png'.format(pollutant.lower(), airshed.lower()))

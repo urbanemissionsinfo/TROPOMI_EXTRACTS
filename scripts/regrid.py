@@ -16,13 +16,14 @@ pollutant = sys.argv[2].upper()
 
 path = os.getcwd() + '/data/{}_{}_yearly_tifs/'.format(extent, pollutant)
 #grids = gpd.read_file(os.getcwd() + '/assets/grids_ea/grids_eastafrica.shp')
-#grids = gpd.read_file(os.getcwd()  + r"/assets/india_grid/grids-0.1x0.1deg/grids_india.shp")
-grids = gpd.read_file(os.getcwd()  + r"/assets/grids_philippines/00.grids/grids_philippines.shp")
+grids = gpd.read_file(os.getcwd()  + r"/assets/india_grid/grids-0.1x0.1deg/grids_india.shp")
+#grids = gpd.read_file(os.getcwd()  + r"/assets/grids_philippines/00.grids/grids_philippines.shp")
+#grids = gpd.read_file(os.getcwd()  + r"/assets/mainlandseasia/00a_grids/grids_mainlandseasia.shp")
+
 grids[['X1','X2','Y1','Y2']] = grids[['X1','X2','Y1','Y2']].astype(float)
 
 tifs = glob.glob(path+"/*.tif")
-print(tifs[4].split("\\")[-1].split('.')[0])
-
+#print(tifs[4].split("\\")[-1].split('.')[0])
 for tif in tqdm(tifs):
     filename = 'regridded_' + tif.split("\\")[-1].split('.')[0]
     regrid_folder_path = os.getcwd() + '/data/{}_{}_regridded_yearly/'.format(extent, pollutant)
