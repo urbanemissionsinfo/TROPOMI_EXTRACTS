@@ -10,7 +10,7 @@ import multiprocessing as mp
 from multiprocessing.pool import ThreadPool
 from tqdm import tqdm
 from datetime import datetime, timedelta
-
+import geopandas as gpd
 import sys
 
 # Check if there are enough command line arguments
@@ -78,7 +78,7 @@ def download_tifs(pollutant, airshed_shp):
     date_to = str(year+1)+'-0'+str(min_month)+'-01'
     date_start = datetime.strptime(date_from, "%Y-%m-%d").replace(day=1)
     # Calculate the first day of the next month (date_end)
-    next_month = date_start + timedelta(days=367)
+    next_month = date_start + timedelta(days=367*6)
     date_end = next_month.replace(day=1)
     # Convert the first day of the next month to a formatted date string
     date_end = date_end.strftime("%Y-%m-%d")
@@ -98,7 +98,7 @@ def download_tifs(pollutant, airshed_shp):
     elif pollutant == 'HCHO':
         band_name = 'tropospheric_HCHO_column_number_density'
     elif pollutant == 'NO2':
-        band_name = 'NO2_column_number_density'
+        band_name = 'tropospheric_NO2_column_number_density	'
     elif pollutant == 'CO':
         band_name = 'CO_column_number_density'
     else:
@@ -126,18 +126,18 @@ def download_tifs(pollutant, airshed_shp):
     #collection = ee.ImageCollection('MODIS/061/MCD19A2_GRANULES').select(['Optical_Depth_055'])
     
     ## To download aggregated data for the given airshed box in the form of a csv.
-    folder_path = os.getcwd()+'/data/{}_{}_yearly_tifs/'.format(airshed_name, pollutant)
+    folder_path = os.getcwd()+'/data/{}_{}_5yearly_tifs/'.format(airshed_name, pollutant)
     if not os.path.exists(folder_path[:-1]):
         os.makedirs(folder_path[:-1])
-    geemap.zonal_statistics(clipped_images.median(),
-                           airshed_box,
-                           folder_path+airshed_name+'_yearlyavg'+'_'+pollutant.lower()+'_'+date_start+'.csv',
-                           statistics_type='MEAN',
-                           scale=12000)
+    # geemap.zonal_statistics(clipped_images.median(),
+    #                        airshed_box,
+    #                        folder_path+airshed_name+'_5yearlyavg'+'_'+pollutant.lower()+'_'+date_start+'.csv',
+    #                        statistics_type='MEAN',
+    #                        scale=12000)
     
     # To download all tif images of a collection
     geemap.ee_export_image(clipped_images.median(),
-                           filename=folder_path+airshed_name+'_yearlyavg'+'_'+pollutant.lower()+'_'+date_start+'.tif',
+                           filename=folder_path+airshed_name+'_5yearlyavg'+'_'+pollutant.lower()+'_'+date_start+'.tif',
                            scale=11000,
                            region=aoi,
                            file_per_band=True)
@@ -150,7 +150,7 @@ pool= ThreadPool(processes=1)
 #pool.map(download_tifs,['SO2','HCHO','O3'])
 
 airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/india_grid/india_grid.shp"
-#airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/centralasia_adm0/centralasia_adm0_select.shp"
+#airshed = r"C:/Users/dskcy/UEInfo/Rasterize_Grids/assets/indiagrids-0.1x0.1deg/grids_india.shp"
 
 args= []
 args.append([pollutant_to_extract, airshed])

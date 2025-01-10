@@ -51,8 +51,8 @@ def download_tifs(pollutant, airshed_shp):
 
    
     
-    min_month = 10 # USER INPUT - MONTH START
-    max_month = 11
+    min_month = 1 # USER INPUT - MONTH START
+    max_month = 12
 
     date_from = str(year)+'-'+str(min_month)+'-01'
     date_to = str(year)+'-'+str(max_month)+'-11'

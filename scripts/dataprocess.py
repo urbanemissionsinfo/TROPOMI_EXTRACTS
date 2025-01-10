@@ -14,6 +14,7 @@ if len(sys.argv) < 3:
 
 pollutant = sys.argv[1]
 extent = sys.argv[2]
+freq = 'monthly'
 # if extent.lower() == 'extent':
 #     csvs_path = os.getcwd()+'/data/'+pollutant+'_csvs/'
 #     airsheds = ['INDIA']
@@ -35,7 +36,7 @@ for airshed in tqdm(airsheds):
     # else:
     #     airshed_name = airshed.split('/')[-1].split('.')[0][6:]
 
-    csvs_path = os.getcwd()+'/data/{}_{}_weekly_tifs/'.format(airshed, pollutant)
+    csvs_path = os.getcwd()+'/data/{}_{}_{}_tifs/'.format(airshed, pollutant, freq)
 
     airshed_name = airshed
 
@@ -63,4 +64,4 @@ for airshed in tqdm(airsheds):
     TIME_SERIES_PATH = os.getcwd()+'/data/timeseries/'
     if not os.path.exists(TIME_SERIES_PATH[:-1]):
         os.makedirs(TIME_SERIES_PATH[:-1])
-    df.to_csv(TIME_SERIES_PATH+'{}_{}_weekly.csv'.format(airshed_name, pollutant), index=False)
+    df.to_csv(TIME_SERIES_PATH+'{}_{}_{}.csv'.format(airshed_name, pollutant, freq), index=False)

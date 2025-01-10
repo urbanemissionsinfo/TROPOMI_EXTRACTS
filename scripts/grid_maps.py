@@ -25,21 +25,21 @@ if freq not in ['yearly','monthly']:
     print("Usage: freq should be monthly or yearly")
     sys.exit(1)
 
-# Load base map shapefile
+# Load base map shapefile and grids gile
 #base_map = gpd.read_file(os.getcwd() + "/assets/east_africa_adm0/east_africa_adm0.shp")
-#base_map = gpd.read_file(os.getcwd() + "/assets/India_states2023/Admin2.shp")
+base_map = gpd.read_file(os.getcwd() + "/assets/India_states2023/Admin2.shp")
 #base_map = gpd.read_file(os.getcwd() + "/assets/philippines_adm0/philippines_adm0.shp")
-base_map = gpd.read_file(os.getcwd() + "/assets/mainlandseasia_adm0/mainlandseasia_adm0.shp")
-
-regridded_geojsons = glob.glob(os.getcwd() + "/data/{}_{}_regridded_{}/*.geojson".format(extent, pollutant, freq))
+#base_map = gpd.read_file(os.getcwd() + "/assets/mainlandseasia_adm0/mainlandseasia_adm0.shp")
 
 # TO MASK
 base_map['common'] = 'c'
 boundary = base_map.dissolve('common')
 boundary = boundary.set_crs('EPSG:4326')
-boundary.drop(['Maille'],axis=1,inplace=True)
+#boundary.drop(['Maille'],axis=1,inplace=True)
+
 #grids = gpd.read_file("assets/grids_philippines/00.grids/grids_philippines.shp")
-grids = gpd.read_file(os.getcwd() + "/assets/mainlandseasia/00a_grids/grids_mainlandseasia.shp")
+#grids = gpd.read_file(os.getcwd() + "/assets/mainlandseasia/00a_grids/grids_mainlandseasia.shp")
+grids = gpd.read_file(os.getcwd()  + r"/assets/india_grid/grids-0.1x0.1deg/grids_india.shp")
 
 grids = grids.set_crs('EPSG:4326')
 #grids_df_masked = gpd.sjoin(grids, boundary, predicate='intersects') 
@@ -100,24 +100,23 @@ def bin(x):
         return 6 
 
 
-def plot_tropomi_india(geojson):
-    year = re.findall(r'\d{4}', geojson)[0]
-    month = re.findall(r'\d{2}', geojson)[2]
+def plot_tropomi_india(csv):
+    year = re.findall(r'\d{4}', csv)[0]
+    month = re.findall(r'\d{2}', csv)[2]
     month_str = str_month_to_abbreviation(month).upper()
     print(year + '-' + month_str)
 
     # Load grid data shapefile
-    grid_data = gpd.read_file(geojson)
+    grid_data = pd.read_csv(csv)
     grid_data = grid_data[grid_data['Maille'].isin(grids_df_masked.Maille.to_list())]
+    grid_data['bin'] = grid_data["value"].apply(bin)
+    grid_data = gpd.GeoDataFrame(grids.merge(grid_data, on='Maille'))
+    #print(grid_data.head())
+    #grid_data[['X1', 'X2', 'Y1', 'Y2']] = grid_data[['X1', 'X2', 'Y1', 'Y2']].astype(float)
+
 
     # Set up the plot
     fig, ax = plt.subplots(figsize=(10, 10)) #10,10
-
-
-    # Plot grid data on top of base map
-    grid_data['bin'] = grid_data["value"].apply(bin)
-    grid_data[['X1', 'X2', 'Y1', 'Y2']] = grid_data[['X1', 'X2', 'Y1', 'Y2']].astype(float)
-
     
     grid_data.plot(column='bin',
                 cmap=custom_cmap,
@@ -151,7 +150,7 @@ def plot_tropomi_india(geojson):
         file_name = "/{}_{}_{}_{}.png".format(extent, pollutant, year, month)
         annotation = '{}-{}'.format(month_str, year)
 
-    plt.text(108.8, 8.3, #Choose Lat Long coords
+    plt.text(85, 38.3, #Choose Lat Long coords - 85, 38.3 for INDIA
              annotation,
              fontsize=16, fontweight='bold', color='black',
              ha='center', va='center',
@@ -171,7 +170,7 @@ def plot_tropomi_india(geojson):
     #plt.figimage(logo, xo=65, yo=20)
     
     legend_img = plt.imread(os.getcwd() + '/assets/{}_{}_legend_100.png'.format(extent.lower(), pollutant.lower()))  # Provide the path to your image file
-    plt.figimage(legend_img, xo=66, yo=20)
+    plt.figimage(legend_img, xo=362, yo=370) #362,370 for INDIA
     
     #plt.tight_layout()
     # # Show plot
@@ -185,7 +184,9 @@ def plot_tropomi_india(geojson):
                 dpi=50
                 )
 
+regridded_geojsons = glob.glob(os.getcwd() + "/data/{}_{}_regridded_{}/*.geojson".format(extent, pollutant, freq))
+regridded_csvs = glob.glob(os.getcwd() + "/data/{}_{}_regridded_{}/*.csv".format(extent, pollutant, freq))
 
-Parallel(n_jobs=4)(delayed(plot_tropomi_india)(geojson) for geojson in regridded_geojsons)
+Parallel(n_jobs=4)(delayed(plot_tropomi_india)(csv) for csv in regridded_csvs)
 
-#plot_tropomi_india(regridded_geojsons[6])
+#plot_tropomi_india(regridded_csvs[59])

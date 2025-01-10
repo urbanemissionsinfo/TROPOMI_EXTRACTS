@@ -72,7 +72,7 @@ def download_tifs(pollutant, airshed_shp):
         elif pollutant == 'HCHO':
             band_name = 'tropospheric_HCHO_column_number_density'
         elif pollutant == 'NO2':
-            band_name = 'NO2_column_number_density'
+            band_name = 'tropospheric_NO2_column_number_density	'
         elif pollutant == 'CO':
             band_name = 'CO_column_number_density'
         else:

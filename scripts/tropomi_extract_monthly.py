@@ -62,15 +62,15 @@ def download_tifs(pollutant, airshed_shp):
     year=year_to_extract ## YEAR FOR WHICH DATA NEEDS TO BE DOWNLOADED - USER INPUT
     airshed_box, aoi = get_aoi(airshed_shp)
     
-    airshed_name = 'SEASIA'
+    airshed_name = 'INDIA'
     print('----***-----*-----***----')
     print("Downloading TIFs for the airshed: ",airshed_name)
     print('----***-----*-----***----')
 
-    if year ==2024:
+    if year ==2025:
         max_month=1
     else:
-        max_month=12
+        max_month=2
     
     min_month = 1 # USER INPUT - MONTH START
 
@@ -101,7 +101,7 @@ def download_tifs(pollutant, airshed_shp):
         elif pollutant == 'HCHO':
             band_name = 'tropospheric_HCHO_column_number_density'
         elif pollutant == 'NO2':
-            band_name = 'NO2_column_number_density'
+            band_name = 'tropospheric_NO2_column_number_density'
         elif pollutant == 'CO':
             band_name = 'CO_column_number_density'
         else:
@@ -153,7 +153,8 @@ pool= ThreadPool(processes=1)
 #pool.map(download_tifs,['SO2','HCHO','O3'])
 
 #airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/grids_philippines/00.gridextents/grids_philippines.shp"
-airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/mainlandseasia/00a_gridextents/grids_mainlandseasia.shp"
+#airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/mainlandseasia/00a_gridextents/grids_mainlandseasia.shp"
+airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/india_grid/india_grid.shp"
 
 args= []
 args.append([pollutant_to_extract, airshed])

@@ -41,10 +41,10 @@ Example usage: `python scripts/season_plot.py NO2 hyderabad`
 6. `run_plots.py`: Run above plots for all airshed-pollutant combinations.
 Example usage: `python scripts/run_plots.py season_plot`
 
-7. `regrid.py`: Re-grids the All India Extracts to 0.1 degree resolution and created a csv, polygon layer of these grids.
+7. `regrid.py`: Re-grids the All India Extracts to 0.1 degree resolution and create a csv, polygon layer of these grids.
 Example usage: `python scripts/regrid.py NO2`
 
-8. `india_grids_composite.py`: Makes a single composite csv of the All India grids for all 60 months.
+8. `extent_grids_composite.py`: Makes a single composite csv of the All grids for all 60 months.
 
 9. `grid_maps.py`: 
 
