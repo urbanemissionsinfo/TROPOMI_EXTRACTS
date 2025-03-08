@@ -15,7 +15,7 @@ import sys
 
 # Check if there are enough command line arguments
 if len(sys.argv) < 3:
-    print("Usage: python scripts/tropomi_extract_annual.py pollutant_to_extract year_to_extract")
+    print("Usage: python scripts/tropomi_extract_annual.py airshed pollutant_to_extract year_to_extract")
     sys.exit(1)
 
 
@@ -25,8 +25,9 @@ credentials = ee.ServiceAccountCredentials(service_account, 'ueinfo-615e315d9158
 ee.Initialize(credentials)
 
 # USER INPUTS
-pollutant_to_extract = sys.argv[1]
-year_to_extract = int(sys.argv[2])
+airshed_name = sys.argv[1] #CAPS
+pollutant_to_extract = sys.argv[2]
+year_to_extract = int(sys.argv[3])
 
 def get_aoi(airshed_shp):
     airshed_box = geemap.shp_to_ee(airshed_shp)
@@ -62,9 +63,8 @@ def download_tifs(pollutant, airshed_shp):
     year=year_to_extract ## YEAR FOR WHICH DATA NEEDS TO BE DOWNLOADED - USER INPUT
     airshed_box, aoi = get_aoi(airshed_shp)
     
-    airshed_name = 'INDIA'
     print('----***-----*-----***----')
-    print("Downloading TIFs for the airshed: ",airshed_name)
+    print("Downloading TIFs for the airshed: ",airshed_name.upper())
     print('----***-----*-----***----')
 
     if year ==2024:
@@ -78,7 +78,7 @@ def download_tifs(pollutant, airshed_shp):
     date_to = str(year+1)+'-0'+str(min_month)+'-01'
     date_start = datetime.strptime(date_from, "%Y-%m-%d").replace(day=1)
     # Calculate the first day of the next month (date_end)
-    next_month = date_start + timedelta(days=367*6)
+    next_month = date_start + timedelta(days=367)
     date_end = next_month.replace(day=1)
     # Convert the first day of the next month to a formatted date string
     date_end = date_end.strftime("%Y-%m-%d")
@@ -98,7 +98,7 @@ def download_tifs(pollutant, airshed_shp):
     elif pollutant == 'HCHO':
         band_name = 'tropospheric_HCHO_column_number_density'
     elif pollutant == 'NO2':
-        band_name = 'tropospheric_NO2_column_number_density	'
+        band_name = 'tropospheric_NO2_column_number_density'
     elif pollutant == 'CO':
         band_name = 'CO_column_number_density'
     else:
@@ -126,7 +126,7 @@ def download_tifs(pollutant, airshed_shp):
     #collection = ee.ImageCollection('MODIS/061/MCD19A2_GRANULES').select(['Optical_Depth_055'])
     
     ## To download aggregated data for the given airshed box in the form of a csv.
-    folder_path = os.getcwd()+'/data/{}_{}_5yearly_tifs/'.format(airshed_name, pollutant)
+    folder_path = os.getcwd()+'/data/{}_{}_yearly_tifs/'.format(airshed_name, pollutant)
     if not os.path.exists(folder_path[:-1]):
         os.makedirs(folder_path[:-1])
     # geemap.zonal_statistics(clipped_images.median(),
@@ -137,8 +137,8 @@ def download_tifs(pollutant, airshed_shp):
     
     # To download all tif images of a collection
     geemap.ee_export_image(clipped_images.median(),
-                           filename=folder_path+airshed_name+'_5yearlyavg'+'_'+pollutant.lower()+'_'+date_start+'.tif',
-                           scale=11000,
+                           filename=folder_path+airshed_name+'_yearlyavg'+'_'+pollutant.lower()+'_'+date_start+'.tif',
+                           scale=1000,
                            region=aoi,
                            file_per_band=True)
     
@@ -149,7 +149,9 @@ def download_tifs(pollutant, airshed_shp):
 pool= ThreadPool(processes=1)
 #pool.map(download_tifs,['SO2','HCHO','O3'])
 
-airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/india_grid/india_grid.shp"
+airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/grids_{}/grids_{}.shp".format(airshed_name.lower(),
+                                                                                        airshed_name.lower())
+#airshed = r"C:/Users/dskcy/UEInfo/TROPOMI_EXTRACTS/assets/india_grid/india_grid.shp"
 #airshed = r"C:/Users/dskcy/UEInfo/Rasterize_Grids/assets/indiagrids-0.1x0.1deg/grids_india.shp"
 
 args= []

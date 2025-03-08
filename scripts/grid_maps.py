@@ -33,32 +33,30 @@ base_map = gpd.read_file(os.getcwd() + "/assets/India_states2023/Admin2.shp")
 
 # TO MASK
 base_map['common'] = 'c'
-boundary = base_map.dissolve('common')
-boundary = boundary.set_crs('EPSG:4326')
+boundary = base_map.dissolve('common').set_crs('EPSG:4326')
 #boundary.drop(['Maille'],axis=1,inplace=True)
 
 #grids = gpd.read_file("assets/grids_philippines/00.grids/grids_philippines.shp")
 #grids = gpd.read_file(os.getcwd() + "/assets/mainlandseasia/00a_grids/grids_mainlandseasia.shp")
-grids = gpd.read_file(os.getcwd()  + r"/assets/india_grid/grids-0.1x0.1deg/grids_india.shp")
+grids = gpd.read_file(os.getcwd()  + r"/assets/india_grid/grids-0.1x0.1deg/grids_india.shp").set_crs('EPSG:4326')
 
-grids = grids.set_crs('EPSG:4326')
 #grids_df_masked = gpd.sjoin(grids, boundary, predicate='intersects') 
 grids_df_masked = grids
 def str_month_to_abbreviation(month_str):
     # Convert the string month to an integer
-    month_int = int(month_str)
+    month_int = int(month_str) 
 
     # Convert the integer month to a datetime object
-    date_obj = datetime.datetime.strptime(str(month_int), "%m")
+    date_obj = datetime.datetime.strptime(str(month_int), "%m") #%m for month
 
     # Format the datetime object to get the three-letter month abbreviation
-    month_abbreviation = date_obj.strftime("%b")
+    month_abbreviation = date_obj.strftime("%b") #%b for month abbreviation
 
-    return month_abbreviation
+    return month_abbreviation 
 
 
 colors_gases = ['#ffffffff', # white
-          '#289e4bff', # dark green
+          '#289e4bff', # dark green 
           '#9ad9adff', #light green
           '#00ffffff', #cyan
           '#f5fc17ff', #yellow
@@ -78,9 +76,9 @@ cmap_name = 'custom_cmap'
 # Create the colormap
 
 if pollutant in ["UVAI", "AOD"]:
-    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors_UVAI, N=len(colors_UVAI))
+    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors_UVAI, N=len(colors_UVAI)) #N is number of colors
 else:
-    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors_gases, N=len(colors_gases))
+    custom_cmap = LinearSegmentedColormap.from_list(cmap_name, colors_gases, N=len(colors_gases)) #N is number of colors
 
 
 def bin(x):

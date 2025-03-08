@@ -25,6 +25,8 @@ elif extent == 'PHILIPPINES':
     grids = gpd.read_file(os.getcwd()  + r"/assets/grids_philippines/00.grids/grids_philippines.shp")
 elif extent == 'SEASIA':
     grids = gpd.read_file(os.getcwd()  + r"/assets/mainlandseasia/00a_grids/grids_mainlandseasia.shp")
+elif extent == 'BANDUNG':
+    grids = gpd.read_file(os.getcwd()  + r"/assets/grids_bandung/grids_bandung.shp")
 else:
     print("Check extent grids file")
     sys.exit(1)
